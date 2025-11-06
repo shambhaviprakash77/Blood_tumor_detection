@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction History</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f1f5f9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+        }
+
+        img {
+            max-height: 100px;
+            border-radius: 6px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-buttons a button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .next-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .next-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🧾 Your Prediction History</h2>
+
+        {% if history %}
+        <table>
+            <tr>
+                <th>Time</th>
+                <th>Prediction</th>
+                <th>Confidence</th>
+                <th>Original</th>
+                <th>Grad-CAM</th>
+            </tr>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.time }}</td>
+                <td>{{ record.prediction }}</td>
+                <td>{{ record.confidence }}</td>
+                <td><img src="{{ url_for('static', filename='uploads/' + record.filename) }}" alt="Original Image"></td>
+                <td><img src="{{ url_for('static', filename='uploads/' + record.gradcam) }}" alt="Grad-CAM Image"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p style="text-align: center; color: #6b7280;">No prediction history found.</p>
+        {% endif %}
+
+        <!-- Back & Next Buttons -->
+        <div class="nav-buttons">
+            <a href="/upload"><button class="back-btn">⬅ Back to Upload</button></a>
+           
+        </div>
+    </div>
+</body>
+</html>

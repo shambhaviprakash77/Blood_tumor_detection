@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ suggestion.title }}</title>
+    <style>
+        body { font-family: Arial; padding: 40px; text-align: center; }
+        .card {
+            max-width: 400px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>{{ suggestion.title }}</h1>
+        <p>{{ suggestion.details }}</p>
+        <a href="{{ url_for('predict') }}">⬅ Back to Prediction</a>
+    </div>
+
+</body>
+</html>

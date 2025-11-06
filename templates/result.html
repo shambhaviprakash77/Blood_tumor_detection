@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediction Result</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,600&display=swap">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .image-row {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .image-box {
+      flex: 0 0 45%;
+      text-align: center;
+    }
+
+    .image-box img {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .result-text {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .confidence {
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .report {
+      margin-top: 40px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .report h3 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .report p {
+      font-size: 15px;
+      color: #555;
+    }
+
+    form {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 12px 25px;
+      background-color: #28a745;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    /* === Chatbot Styles === */
+    #chatbox {
+      position: fixed;
+      bottom: 90px;
+      right: 30px;
+      width: 320px;
+      max-height: 400px;
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+
+    #chatbox-header {
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 10px 10px 0 0;
+    }
+
+    #chatbox-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+
+    #chatbox-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    #chatbox-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 0 0 0 10px;
+    }
+
+    #chatbox-input button {
+      padding: 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 0 0 10px 0;
+    }
+
+    .chat-toggle-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      background: #007bff;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .nav-buttons a button {
+      padding: 12px 25px;
+      border-radius: 6px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .next-btn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .back-btn:hover {
+      background-color: #5a6268;
+    }
+
+    .next-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🧪 Tumor Prediction Result</h1>
+
+    <div class="image-row">
+      <div class="image-box">
+        <h3>Original Image</h3>
+        <img src="{{ img_path }}" alt="Uploaded Image">
+      </div>
+      <div class="image-box">
+        <h3>Grad-CAM Visualization</h3>
+        <img src="{{ gradcam_path }}" alt="GradCAM">
+      </div>
+    </div>
+
+    <div class="result-text">
+      <p><strong>Patient Name:</strong> {{ patient_name }}</p>
+      <p><strong>Prediction:</strong> {{ prediction }}</p>
+      <p><strong>Confidence:</strong> <span class="confidence">{{ confidence | round(2) * 100 }}%</span></p>
+    </div>
+
+    <div class="report">
+      <h3>Grad-CAM Interpretation</h3>
+      <p>The Grad-CAM heatmap highlights the critical regions in the input image that influenced the model's decision. Areas in red indicate strong relevance, helping medical professionals or users understand the prediction reasoning visually.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('download_report') }}">
+      <input type="hidden" name="patient_name" value="{{ patient_name }}">
+      <input type="hidden" name="prediction" value="{{ prediction }}">
+      <input type="hidden" name="confidence" value="{{ confidence }}">
+      <input type="hidden" name="img_path" value="{{ img_path }}">
+      <input type="hidden" name="gradcam_path" value="{{ gradcam_path }}">
+      <button type="submit">📥 Download PDF Report</button>
+    </form>
+
+    <!-- Back & Next Navigation Buttons -->
+    <div class="nav-buttons">
+      <a href="/upload"><button class="back-btn">⬅ Back to Upload</button></a>
+      <a href="/history"><button class="next-btn">➡ View History</button></a>
+    </div>
+  </div>
+
+  <!-- Chatbot -->
+  <div id="chatbox">
+    <div id="chatbox-header">Chat Assistant</div>
+    <div id="chatbox-body"></div>
+    <div id="chatbox-input">
+      <input type="text" id="userInput" placeholder="Ask a question..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <button class="chat-toggle-btn" onclick="toggleChat()">💬</button>
+
+  <script>
+    function toggleChat() {
+      const box = document.getElementById("chatbox");
+      box.style.display = (box.style.display === "none") ? "flex" : "none";
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+      const body = document.getElementById("chatbox-body");
+      body.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+      input.value = "";
+
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage })
+      });
+      const data = await res.json();
+      body.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+      body.scrollTop = body.scrollHeight;
+    }
+  </script>
+</body>
+</html>

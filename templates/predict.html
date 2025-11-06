@@ -1,0 +1,154 @@
+<!-- templates/predict.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blood Tumor Detection</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f9ff, #dbeafe);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #1e40af;
+            margin-bottom: 20px;
+        }
+        input[type="file"], input[type="text"] {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            width: 80%;
+        }
+        button {
+            background-color: #1d4ed8;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        .instructions {
+            background: #eff6ff;
+            border-left: 6px solid #3b82f6;
+            text-align: left;
+            margin-top: 40px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .instructions h2 {
+            font-size: 20px;
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+        .instructions ul {
+            padding-left: 20px;
+            color: #374151;
+        }
+        .note {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 10px;
+        }
+        .result-box {
+            background: #e0f2fe;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+            color: #075985;
+            font-size: 18px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #1e3a8a;
+            font-weight: bold;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        .nav-buttons a {
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-btn {
+            background-color: #ccc;
+            color: #000;
+        }
+        .next-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .next-btn:hover {
+            background-color: #0056b3;
+        }
+        .back-btn:hover {
+            background-color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🧬 Blood Tumor Detection</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <label for="patient_name">👤 Patient Name</label>
+        <input type="text" name="patient_name" id="patient_name" placeholder="Enter full name" required>
+
+        <label for="image">🖼 Upload Blood Image</label>
+        <input type="file" name="image" id="image" accept="image/*" required>
+
+        <button type="submit">🔍 Analyze Image</button>
+    </form>
+
+    {% if result %}
+    <div class="result-box">
+        <p><strong>Result:</strong> {{ result }}</p>
+        <p><strong>Symptoms:</strong> {{ symptoms }}</p>
+        <p><strong>Causes:</strong> {{ causes }}</p>
+    </div>
+    {% endif %}
+
+    <div class="instructions">
+        <h2>📌 How to Use</h2>
+        <ul>
+            <li>Enter patient name and upload a clear blood smear image (PNG/JPG).</li>
+            <li>Click <strong>Analyze Image</strong> to detect tumor presence.</li>
+            <li>View prediction result and Grad-CAM heatmap.</li>
+            <li>Download a detailed report of findings.</li>
+        </ul>
+        <p class="note">Note: This is a student research prototype and not for medical use.</p>
+    </div>
+
+    <!-- Back and Next buttons -->
+    <div class="nav-buttons">
+        <a href="/login" class="back-btn">⬅ Back</a>
+        <a href="/history" class="next-btn">Next ➡</a>
+    </div>
+</div>
+
+</body>
+</html>
